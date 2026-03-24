@@ -1,3 +1,5 @@
+import { describe, test, it, expect, beforeEach, vi } from 'vitest'
+import 'aws-sdk-client-mock-vitest/extend'
 import { run, parseParameters, validateArn, cleanupChangeset } from "../index"
 import * as core from '@actions/core'
 import { mockClient } from 'aws-sdk-client-mock'
@@ -13,18 +15,17 @@ import {
   DescribeStacksCommand,
   GetTemplateSummaryCommand,
 } from '@aws-sdk/client-cloudformation'
-import 'aws-sdk-client-mock-jest'
 
-jest.mock("@actions/core")
+vi.mock("@actions/core")
 
 const mockCfnClient = mockClient(CloudFormationClient)
 
-const getInputSpy = jest.spyOn(core, 'getInput')
-const getMultilineInputSpy = jest.spyOn(core, 'getMultilineInput')
+const getInputSpy = vi.spyOn(core, 'getInput')
+const getMultilineInputSpy = vi.spyOn(core, 'getMultilineInput')
 
 describe("run", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     mockCfnClient
     .reset()
@@ -101,16 +102,14 @@ describe("run", () => {
 
     expect(core.setFailed).not.toHaveBeenCalled()
 
-    expect(mockCfnClient).toHaveReceivedNthCommandWith(
-      1,
+    expect(mockCfnClient).toHaveReceivedCommandWith(
       GetTemplateSummaryCommand,
       {
         StackName: 'my-stack',
       }
     )
 
-    expect(mockCfnClient).toHaveReceivedNthCommandWith(
-      2,
+    expect(mockCfnClient).toHaveReceivedCommandWith(
       CreateChangeSetCommand,
       {
         ChangeSetName: 'my-stack-changeset',
@@ -131,8 +130,7 @@ describe("run", () => {
       }
     )
 
-    expect(mockCfnClient).toHaveReceivedNthCommandWith(
-      3,
+    expect(mockCfnClient).toHaveReceivedCommandWith(
       DescribeChangeSetCommand,
       {
         ChangeSetName: 'my-stack-changeset',
@@ -140,8 +138,7 @@ describe("run", () => {
       }
     )
 
-    expect(mockCfnClient).toHaveReceivedNthCommandWith(
-      4,
+    expect(mockCfnClient).toHaveReceivedCommandWith(
       ExecuteChangeSetCommand,
       {
         ChangeSetName: 'my-stack-changeset',
@@ -149,8 +146,7 @@ describe("run", () => {
       }
     )
 
-    expect(mockCfnClient).toHaveReceivedNthCommandWith(
-      5,
+    expect(mockCfnClient).toHaveReceivedCommandWith(
       DescribeStacksCommand,
       {
         StackName: 'my-stack'
@@ -172,16 +168,14 @@ describe("run", () => {
 
     expect(core.setFailed).not.toHaveBeenCalled()
 
-    expect(mockCfnClient).toHaveReceivedNthCommandWith(
-      1,
+    expect(mockCfnClient).toHaveReceivedCommandWith(
       GetTemplateSummaryCommand,
       {
         StackName: 'my-stack',
       }
     )
 
-    expect(mockCfnClient).toHaveReceivedNthCommandWith(
-      2,
+    expect(mockCfnClient).toHaveReceivedCommandWith(
       CreateChangeSetCommand,
       {
         ChangeSetName: 'my-stack-changeset',
@@ -202,8 +196,7 @@ describe("run", () => {
       }
     )
 
-    expect(mockCfnClient).toHaveReceivedNthCommandWith(
-      3,
+    expect(mockCfnClient).toHaveReceivedCommandWith(
       DescribeChangeSetCommand,
       {
         ChangeSetName: 'my-stack-changeset',
@@ -211,8 +204,7 @@ describe("run", () => {
       }
     )
 
-    expect(mockCfnClient).toHaveReceivedNthCommandWith(
-      4,
+    expect(mockCfnClient).toHaveReceivedCommandWith(
       ExecuteChangeSetCommand,
       {
         ChangeSetName: 'my-stack-changeset',
@@ -220,8 +212,7 @@ describe("run", () => {
       }
     )
 
-    expect(mockCfnClient).toHaveReceivedNthCommandWith(
-      5,
+    expect(mockCfnClient).toHaveReceivedCommandWith(
       DescribeStacksCommand,
       {
         StackName: 'my-stack'
@@ -241,8 +232,7 @@ describe("run", () => {
 
     expect(core.setFailed).not.toHaveBeenCalled()
 
-    expect(mockCfnClient).toHaveReceivedNthCommandWith(
-      1,
+    expect(mockCfnClient).toHaveReceivedCommandWith(
       CreateChangeSetCommand,
       {
         ChangeSetName: 'my-stack-changeset',
@@ -257,7 +247,7 @@ describe("run", () => {
 
 describe('Parse Parameters', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   test('returns all parameters list from string', async () => {
@@ -311,7 +301,7 @@ describe('Parse Parameters', () => {
 
 describe('Validate Role ARN', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   test('returns valid arn', async () => {
@@ -328,7 +318,7 @@ describe('Validate Role ARN', () => {
 
 describe('Cleanup Changeset', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     mockCfnClient.reset()
   })
 
