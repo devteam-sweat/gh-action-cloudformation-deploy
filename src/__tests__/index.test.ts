@@ -1,6 +1,6 @@
 import { describe, test, it, expect, beforeEach, vi } from 'vitest'
 import 'aws-sdk-client-mock-vitest/extend'
-import { run, parseParameters, validateArn, cleanupChangeset } from "../index"
+import { run, parseParameters, validateArn, cleanupChangeset } from "../main"
 import * as core from '@actions/core'
 import { mockClient } from 'aws-sdk-client-mock'
 import {
